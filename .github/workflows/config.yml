@@ -1,0 +1,65 @@
+on:
+  push:
+    branches:
+      - main
+      - feature/*
+      - release/*
+
+jobs:
+  snapshot:
+    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
+    runs-on: ubuntu-latest
+    env:
+      MAVEN_USERNAME: ${{ secrets.PUBLIC_MAVEN_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.PUBLIC_MAVEN_PASSWORD }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 9
+        server-id: sonatype
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
+    - uses: actions/cache@v1
+      with:
+        key: ${{ hashFiles('**/pom.xml') }}
+        path: ~/.m2
+    - run: |
+        mvn install -B -DskipTests
+    - run: |
+        mvn deploy -B
+  release:
+    needs: snapshot
+    if: ${{ startsWith(github.ref, 'refs/heads/release') }}
+    runs-on: ubuntu-latest
+    env:
+      GIT_USER_EMAIL: ${{ secrets.PUBLIC_GIT_USER_EMAIL }}
+      GIT_USER_NAME: ${{ secrets.PUBLIC_GIT_USER_NAME }}
+      GITHUB_SSH_KEY: ${{ secrets.PUBLIC_GITHUB_SSH_KEY }}
+      GPG_KEY_BASE64: ${{ secrets.PUBLIC_GPG_KEY_BASE64 }}
+      GPG_PASSPHRASE: ${{ secrets.PUBLIC_GPG_PASSPHRASE }}
+      MAVEN_USERNAME: ${{ secrets.PUBLIC_MAVEN_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.PUBLIC_MAVEN_PASSWORD }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 9
+        server-id: sonatype
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
+    - run: |
+        git config user.email ${GIT_USER_EMAIL}
+        git config user.name "${GIT_USER_NAME}"
+    - run: |
+        mkdir -m 700 ~/.ssh
+        echo -e "${GITHUB_SSH_KEY}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+    - run: |
+        printf "${GPG_KEY_BASE64}" | base64 -d > /tmp/gpg.key
+        gpg -q --pinentry-mode loopback --passphrase ${GPG_PASSPHRASE} --import /tmp/gpg.key
+    - run: |
+        mvn release:prepare -B -DreleaseVersion="${GITHUB_REF##*/}" -Darguments=-DskipTests
+        mvn release:perform -B -Pgpg -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE}
+    - run: |
+        git push origin ${GITHUB_REF}:main
