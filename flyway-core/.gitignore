@@ -3,3 +3,5 @@
 /.project
 /.settings/
 /target/
+
+/src/test/resources/*-my.xml

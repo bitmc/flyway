@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package org.flywaydb.core;
 
+import java.util.Objects;
+
 import org.flywaydb.core.api.configuration.Configuration;
 import org.flywaydb.core.internal.sqlscript.SqlReplacer;
 
@@ -28,6 +30,17 @@ public class CustomFlyway extends Flyway {
 	 * {@link SqlReplacer}
 	 */
 	private final SqlReplacer sqlReplacer;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param flyway {@link Flyway}
+	 * @param sqlReplacer {@link #sqlReplacer}
+	 */
+	public CustomFlyway(Flyway flyway, SqlReplacer sqlReplacer) {
+		
+		this(Objects.requireNonNull(flyway).getConfiguration(), sqlReplacer);
+	}
 	
 	/**
 	 * Constructor

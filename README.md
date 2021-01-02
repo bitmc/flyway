@@ -14,7 +14,7 @@
 	<dependency>
 	    <groupId>com.github.bitmc</groupId>
 	    <artifactId>flyway-core</artifactId>
-	    <version>7.1.1.0</version>
+	    <version>7.1.1.1</version>
 	</dependency>
 	```
 
@@ -55,4 +55,4 @@
 
 ## License
 
-* Apache License 2.0.
+* Apache License 2.0

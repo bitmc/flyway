@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.flywaydb.core.internal.sqlscript;
 
 import java.util.regex.Pattern;
 
+import org.flywaydb.core.api.logging.Log;
+import org.flywaydb.core.api.logging.LogFactory;
 import org.flywaydb.core.internal.util.StringUtils;
 
 import lombok.NonNull;
@@ -27,6 +29,11 @@ import lombok.RequiredArgsConstructor;
  * {@link SqlReplacer}: MySQL-H2
  */
 public class MysqlH2SqlReplacer implements SqlReplacer {
+	
+	/**
+	 * {@link Log}
+	 */
+	private static final Log logger = LogFactory.getLog(MysqlH2SqlReplacer.class);
 	
 	/**
 	 * LF
@@ -68,7 +75,11 @@ public class MysqlH2SqlReplacer implements SqlReplacer {
 		replacer.replace("^\n+", LF);
 		replacer.replace("\n+$", LF);
 		
-		return replacer.toString();
+		String result = replacer.toString();
+		
+		logger.debug(String.format("SQL: %s", result));
+		
+		return result;
 	}
 	
 	/**
