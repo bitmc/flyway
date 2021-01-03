@@ -18,7 +18,7 @@
 	</dependency>
 	```
 
-1. Implement `SqlReplacer`. You can also use `MysqlH2SqlReplacer`.
+1. Implement `SqlReplacer`. You can also use [MysqlH2SqlReplacer](https://github.com/bitmc/flyway/blob/main/flyway-core/src/main/java/org/flywaydb/core/internal/sqlscript/MysqlH2SqlReplacer.java).
 
 	```java
 	package my.project;
@@ -37,18 +37,19 @@
 
 	```java
 	import org.flywaydb.core.CustomFlyway;
-	import org.flywaydb.core.api.configuration.FluentConfiguration;
+	import org.flywaydb.core.Flyway;
 	import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 	import my.project.MySqlReplacer;
 	
-	FluentConfiguration config = Flyway.configure()
+	Flyway source = Flyway.configure()
 	    .locations("classpath:/data/migration")
 	    .schemas("example")
 	    .sqlMigrationPrefix("")
 	    .sqlMigrationSeparator("-")
-	    .dataSource(DataSourceBuilder.create().url("jdbc:h2:mem:test;MODE=MySQL;DATABASE_TO_UPPER=FALSE").build());
+	    .dataSource(DataSourceBuilder.create().url("jdbc:h2:mem:test;MODE=MySQL;DATABASE_TO_UPPER=FALSE").build())
+	    .load();
 	
-	CustomFlyway flyway = new CustomFlyway(config, new MySqlReplacer());
+	CustomFlyway flyway = new CustomFlyway(source, new MySqlReplacer());
 	flyway.clean();
 	flyway.migrate();
 	```
