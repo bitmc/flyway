@@ -14,7 +14,7 @@
 	<dependency>
 	    <groupId>com.github.bitmc</groupId>
 	    <artifactId>flyway-core</artifactId>
-	    <version>7.1.1.1</version>
+	    <version>7.2.1.0</version>
 	</dependency>
 	```
 
