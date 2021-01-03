@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.github.bitmc</groupId>
 		<artifactId>flyway-parent</artifactId>
-		<version>7.3.2.0</version>
+		<version>7.3.2.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -14,7 +14,7 @@
 	<packaging>jar</packaging>
 
 	<scm>
-		<tag>7.3.2.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<dependencies>
