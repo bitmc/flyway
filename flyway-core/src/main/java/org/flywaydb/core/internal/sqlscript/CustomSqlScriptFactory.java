@@ -19,7 +19,7 @@ package org.flywaydb.core.internal.sqlscript;
 import java.lang.reflect.Field;
 
 import org.flywaydb.core.api.ResourceProvider;
-import org.flywaydb.core.internal.resource.LoadableResource;
+import org.flywaydb.core.api.resource.LoadableResource;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
